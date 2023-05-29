@@ -43,7 +43,7 @@
 		pruned
 	}
 
-首先针对优化后的LogicalPl生成候选PhysicalPlan（就是针对最外层的操作类型生成的PhysicalPlan），这里的候选PhysicalPl针对的是最外层LogicalPlan的转换，对于子查询（LogicalPlan子树）暂时标记为PlanLater。
+首先针对优化后的LogicalPlan生成候选PhysicalPlan（就是针对最外层的操作类型生成的PhysicalPlan），这里的候选PhysicalPl针对的是最外层LogicalPlan的转换，对于子查询（LogicalPlan子树）暂时标记为PlanLater。
 然后利用`this.plan(logicalPlan)`将标记为PlanLater的子查询递归转化为PhysicalPlan，最后替换掉相应位置的`placeholder`。所以可以发现转化是由顶向下的。这样每层转化都会生成很多PhysicalPlan，
 所以总的PhysicalPlan是指数级增加的，越是复杂的SQL语句，产生的可能的PhysicalPlan数量是越多的。所以在这个函数中最后还有一个`prunePlans`用于剪去不合适的plan，从而避免组合爆炸，但是现在还没有实现。
 
